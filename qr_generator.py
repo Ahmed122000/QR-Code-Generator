@@ -15,15 +15,21 @@ class QRGenerator():
         try:
             qr = qrcode.QRCode(
                 version= version, 
-                error_correction = qrcode.constants.ERROR_CORRECT_M, 
+                error_correction = qrcode.constants.ERROR_CORRECT_H, 
                 box_size = box_size, 
                 border= border
             )
             qr.add_data(data)
-            qr.make()
+            qr.make(fit=True)
 
-            img = qr.make_image(fill_color="black", back_color="white")
+            img = qr.make_image(fill_color="black", back_color="white").convert("RGBA")
 
+            watermark = Image.open('icon.png')
+            watermark_size = (img.size[0] //4, img.size[1]//4)
+            watermark = watermark.resize(watermark_size, Image.LANCZOS)
+            
+            img.paste(watermark, ((img.size[0]- watermark.size[0])//2, (img.size[1] - watermark.size[1])//2))
+            
             img.save(os.path.join(file_path, "qrcode.png"))
 
             return img
