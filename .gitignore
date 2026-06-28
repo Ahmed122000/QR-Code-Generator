@@ -217,8 +217,3 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-#generated images by the app
-*.png
-*.svg
-*.jpg
-*.jpeg
