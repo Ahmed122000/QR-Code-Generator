@@ -21,15 +21,28 @@ A Python-based QR code generator with customizable styling, watermark support, a
 ## Requirements
 
 - Python 3.x
-- `qrcode` library
-- `pillow` (PIL) library
+- Dependencies listed in `requirements.txt`:
+  - `qrcode==7.3.1`
+  - `Pillow==8.4.0`
 
 ## Installation
 
-### Install Dependencies
+### Quick Setup
 
+1. Clone the repository:
 ```bash
-pip install qrcode[pil] pillow
+git clone https://github.com/Ahmed122000/QR-Code-Generator.git
+cd QR-Code-Generator
+```
+
+2. Install dependencies using requirements.txt:
+```bash
+pip install -r requirements.txt
+```
+
+**Alternative:** Install dependencies manually:
+```bash
+pip install qrcode[pil]==7.3.1 Pillow==8.4.0
 ```
 
 ## Usage
@@ -123,6 +136,7 @@ python main.py --url "https://example.com" --color blue --icon watermark.png --p
 QR-Code-Generator/
 ├── main.py              # CLI entry point with argument parsing and validation
 ├── qr_generator.py      # Core QR code generation logic
+├── requirements.txt     # Python package dependencies
 ├── icon.png             # Default watermark image (optional)
 ├── LICENSE              # MIT License
 └── README.md            # This file
@@ -150,6 +164,12 @@ QR-Code-Generator/
 - **Multiple Formats:** Saves in PNG, JPG, or JPEG format
 - **Error Handling:** Catches and reports specific errors (DataOverflowError, PermissionError, etc.)
 - **Type Hints:** Uses Python type hints for better code clarity
+
+### `requirements.txt`
+Contains all dependencies needed to run the project:
+- `qrcode==7.3.1` - QR code generation library
+- `Pillow==8.4.0` - Image processing library
+- Pin versions ensure compatibility and reproducible builds
 
 ## Configuration
 
@@ -196,14 +216,28 @@ The application provides helpful error messages for common issues:
 | `Icon file not found` | Icon path doesn't exist | Verify icon path is correct |
 | `Data too large for this QR version` | Text/URL too long | Reduce input size |
 
+## Troubleshooting
+
+### ModuleNotFoundError: No module named 'qrcode'
+Make sure to install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Permission Denied when creating output directory
+Check write permissions on the target directory path.
+
+### Icon not displayed in QR code
+Ensure the icon file path is correct and the file exists. The icon should support transparency (PNG recommended).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Technologies Used
 
-- **qrcode** - QR code generation
-- **Pillow (PIL)** - Image processing and watermarking
+- **qrcode** - QR code generation (v7.3.1)
+- **Pillow (PIL)** - Image processing and watermarking (v8.4.0)
 - **argparse** - Command-line interface
 - **typing** - Type hints for better code quality
 
