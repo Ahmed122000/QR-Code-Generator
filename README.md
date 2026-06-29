@@ -1,6 +1,6 @@
 # QR Code Generator
 
-A Python-based QR code generator with customizable styling and watermark support. Generate professional QR codes from URLs or text with ease.
+A Python-based QR code generator with customizable styling, watermark support, and multiple output formats. Generate professional QR codes from URLs or text with ease.
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Language](https://img.shields.io/badge/Language-Python-blue.svg)
@@ -9,11 +9,14 @@ A Python-based QR code generator with customizable styling and watermark support
 
 ✨ **Core Capabilities:**
 - Generate QR codes from URLs or plain text
-- Customizable QR code colors
-- Built-in watermark support (centered on QR code)
+- **Customizable QR code colors** (red, blue, green, orange, purple, yellow, black)
+- **Optional watermark/icon support** at the center of QR code
+- **Multiple output formats** (PNG, JPG, JPEG)
 - High error correction rate (Level H)
-- Automatic output saving in PNG format
+- **Automatic directory creation** for output paths
 - Input validation for URLs
+- **Better error handling** with detailed error messages
+- **Mutually exclusive arguments** enforcing either URL or text input
 
 ## Requirements
 
@@ -45,24 +48,37 @@ python main.py --txt "Hello, World!"
 
 Generate a QR code with custom color:
 ```bash
-python main.py --url "https://example.com" --color "red"
+python main.py --url "https://example.com" --color red
 ```
 
-Generate with custom output filename:
+Generate with custom output filename and directory:
 ```bash
-python main.py --txt "Your text here" --output "my_qrcode"
+python main.py --txt "Your text here" --output "my_qrcode" --path "./qrcodes"
+```
+
+Generate with custom format (JPG instead of PNG):
+```bash
+python main.py --url "https://example.com" --format jpg
+```
+
+Generate with watermark/icon:
+```bash
+python main.py --url "https://example.com" --icon icon.png
 ```
 
 ### Arguments
 
-| Argument | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `--url` | string | Optional | - | URL to encode in QR code (URL validation performed) |
-| `--txt` | string | Optional | - | Text to encode in QR code |
-| `--color` | string | Optional | `black` | QR code color (e.g., `red`, `blue`, `#FF5733`) |
-| `--output` | string | Optional | `qrcode` | Output filename (without .png extension) |
+| Argument | Type | Default | Required | Description |
+|----------|------|---------|----------|-------------|
+| `--url` | string | - | * | URL to encode in QR code (URL validation performed) |
+| `--txt` | string | - | * | Text to encode in QR code |
+| `--color` | string | `black` | No | QR code color: `red`, `blue`, `green`, `orange`, `purple`, `yellow`, `black` |
+| `--output` | string | `qrcode` | No | Output filename (without extension) |
+| `--icon` | string | - | No | Path to icon/watermark image file |
+| `--path` | string | `./` | No | Output directory path |
+| `--format` | string | `png` | No | Output image format: `png`, `jpg`, `jpeg` |
 
-**Note:** You must provide either `--url` or `--txt`, but not both.
+**\* Either `--url` or `--txt` is required, but not both.**
 
 ## Examples
 
@@ -71,27 +87,43 @@ python main.py --txt "Your text here" --output "my_qrcode"
 python main.py --url "https://github.com/Ahmed122000/QR-Code-Generator"
 ```
 
-**Output:** `qrcode.png`
+**Output:** `qrcode.png` (in current directory)
 
-### Generate red QR code from text
+### Generate red QR code from text with custom output
 ```bash
-python main.py --txt "Contact: Ahmed@example.com" --color "red" --output "contact_qr"
+python main.py --txt "Contact: Ahmed@example.com" --color red --output "contact_qr"
 ```
 
 **Output:** `contact_qr.png`
 
-### Generate with custom color code
+### Generate QR code with watermark/logo
 ```bash
-python main.py --url "https://example.com" --color "#009688"
+python main.py --url "https://example.com" --icon logo.png --output "branded_qr"
 ```
+
+**Output:** `branded_qr.png` (with centered logo)
+
+### Generate JPG format in custom directory
+```bash
+python main.py --txt "My Data" --format jpg --path "./output/qrcodes" --output "my_code"
+```
+
+**Output:** `./output/qrcodes/my_code.jpg` (creates directory if it doesn't exist)
+
+### Generate blue QR code with all custom options
+```bash
+python main.py --url "https://example.com" --color blue --icon watermark.png --path "./qr_codes" --output "website_qr" --format png
+```
+
+**Output:** `./qr_codes/website_qr.png`
 
 ## Project Structure
 
 ```
 QR-Code-Generator/
-├── main.py              # CLI entry point with argument parsing
+├── main.py              # CLI entry point with argument parsing and validation
 ├── qr_generator.py      # Core QR code generation logic
-├── icon.png             # Watermark image
+├── icon.png             # Default watermark image (optional)
 ├── LICENSE              # MIT License
 └── README.md            # This file
 ```
@@ -99,36 +131,70 @@ QR-Code-Generator/
 ## How It Works
 
 ### `main.py`
-- Handles command-line argument parsing using `argparse`
-- Validates URL format using `urllib.parse.urlparse`
-- Ensures either `--url` or `--txt` is provided (not both)
-- Calls `QRGenerator` to generate the QR code
+- **Argument Parsing:** Uses `argparse` with mutually exclusive group for `--url` and `--txt`
+- **URL Validation:** Validates URL format using `urllib.parse.urlparse`
+- **Input Validation:** Ensures input data is not empty and properly formatted
+- **Directory Creation:** Automatically creates output directory if it doesn't exist
+- **Error Handling:** Provides detailed error messages and graceful exit codes
+- **Calls `QRGenerator`:** Passes arguments to the core QR generation logic
 
 ### `qr_generator.py`
-- Contains the `QRGenerator` class
-- Generates QR codes using the `qrcode` library
-- Uses PIL (Pillow) to:
-  - Convert QR code to RGBA format
-  - Apply watermark/icon at the center
-  - Scale watermark to 1/4 of QR code size
-  - Composite watermark onto QR code with transparency
-  - Save final image as PNG
+- **QRGenerator Class:** Static method `generate_qrcode()` handles all QR generation
+- **QR Code Creation:** Uses `qrcode` library with auto-fitting version
+- **Image Processing:** Uses PIL (Pillow) for image manipulation
+- **Icon/Watermark Support:** 
+  - Optionally loads and converts icon to RGBA
+  - Scales watermark to 1/4 of QR code size
+  - Centers watermark on QR code
+  - Composites with transparency support
+- **Multiple Formats:** Saves in PNG, JPG, or JPEG format
+- **Error Handling:** Catches and reports specific errors (DataOverflowError, PermissionError, etc.)
+- **Type Hints:** Uses Python type hints for better code clarity
 
 ## Configuration
 
-You can customize the QR code generation by modifying parameters in `qr_generator.py`:
+### QR Code Parameters (Advanced)
+
+You can modify advanced parameters by editing `qr_generator.py`:
 
 ```python
-generate_qrcode(
-    data,                           # QR code data
-    file_path="./",                 # Save location
-    output="qrcode",                # Filename
-    version=1,                      # QR code version (1-40)
-    box_size=10,                    # Pixel size per box
-    border=2,                       # Border size in boxes
-    color="black"                   # QR code color
+QRGenerator.generate_qrcode(
+    data,                           # QR code data (required)
+    output="qrcode",                # Output filename
+    output_path="./",               # Output directory
+    box_size=10,                    # Pixel size per box (default: 10)
+    border=2,                       # Border width in boxes (default: 2)
+    color="black",                  # QR code color
+    icon_path=None,                 # Icon file path (optional)
+    format='png'                    # Output format
 )
 ```
+
+### Color Options
+- `red` - Red colored QR code
+- `blue` - Blue colored QR code
+- `green` - Green colored QR code
+- `orange` - Orange colored QR code
+- `purple` - Purple colored QR code
+- `yellow` - Yellow colored QR code
+- `black` - Black colored QR code (default)
+
+### Output Formats
+- `png` - PNG format (lossless, recommended)
+- `jpg` - JPEG format (lossy compression)
+- `jpeg` - JPEG format (alias for jpg)
+
+## Error Handling
+
+The application provides helpful error messages for common issues:
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Input data cannot be empty!` | Empty input provided | Provide non-empty `--url` or `--txt` |
+| `Invalid URL format!` | Malformed URL | Use proper URL: `https://example.com` |
+| `Cannot create directory` | Permission denied | Check directory permissions |
+| `Icon file not found` | Icon path doesn't exist | Verify icon path is correct |
+| `Data too large for this QR version` | Text/URL too long | Reduce input size |
 
 ## License
 
@@ -139,10 +205,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **qrcode** - QR code generation
 - **Pillow (PIL)** - Image processing and watermarking
 - **argparse** - Command-line interface
+- **typing** - Type hints for better code quality
 
 ## Topics
 
-`argparse` | `python` | `qrcode` | `qrcode-generator`
+`argparse` | `python` | `qrcode` | `qrcode-generator` | `cli` | `image-processing`
 
 ---
 
