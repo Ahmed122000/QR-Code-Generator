@@ -10,7 +10,7 @@ class QRGenerator():
     def generate_qrcode( 
             data:str,
             output:str = "qrcode", 
-            output_path:str = "./output",
+            output_path:str = "./assets/output",
             box_size:int = 10, 
             border:int = 2, 
             color:str = "black", 

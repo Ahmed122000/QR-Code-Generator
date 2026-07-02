@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--color",      default='black',    help="QR code color (default: black)",      choices=['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'black'])
     parser.add_argument("--output",     default="qrcode",   help="Output filename without extension")
     parser.add_argument("--icon",                           help = "Path to the icon to set in the center of the qr code")
-    parser.add_argument("--path",       default="./output",       help="Output directory path")
+    parser.add_argument("--path",       default="./assets/output", help="Output directory path")
     parser.add_argument("--format",     default='png',      help="Output image format (default: png)",  choices=['png', 'jpg', 'jpeg'])
     
     args = parser.parse_args()
