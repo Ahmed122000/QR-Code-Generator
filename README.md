@@ -88,7 +88,7 @@ python main.py --url "https://example.com" --icon icon.png
 | `--color` | string | `black` | No | QR code color: `red`, `blue`, `green`, `orange`, `purple`, `yellow`, `black` |
 | `--output` | string | `qrcode` | No | Output filename (without extension) |
 | `--icon` | string | - | No | Path to icon/watermark image file |
-| `--path` | string | `./` | No | Output directory path |
+| `--path` | string | `./assets/output` | No | Output directory path |
 | `--format` | string | `png` | No | Output image format: `png`, `jpg`, `jpeg` |
 
 **\* Either `--url` or `--txt` is required, but not both.**
@@ -134,6 +134,9 @@ python main.py --url "https://example.com" --color blue --icon watermark.png --p
 
 ```
 QR-Code-Generator/
+├── assets
+    ├── output
+    └── logo 
 ├── main.py              # CLI entry point with argument parsing and validation
 ├── qr_generator.py      # Core QR code generation logic
 ├── requirements.txt     # Python package dependencies
@@ -181,7 +184,7 @@ You can modify advanced parameters by editing `qr_generator.py`:
 QRGenerator.generate_qrcode(
     data,                           # QR code data (required)
     output="qrcode",                # Output filename
-    output_path="./",               # Output directory
+    output_path="./assets/output",  # Output directory
     box_size=10,                    # Pixel size per box (default: 10)
     border=2,                       # Border width in boxes (default: 2)
     color="black",                  # QR code color
