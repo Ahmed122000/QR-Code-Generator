@@ -10,12 +10,12 @@ class QRGenerator():
     def generate_qrcode( 
             data:str,
             output:str = "qrcode", 
-            output_path:str = "./",
+            output_path:str = "./output",
             box_size:int = 10, 
             border:int = 2, 
             color:str = "black", 
             icon_path:Optional[str]=None, 
-            format: str = 'png'
+            img_format: str = 'png'
         ) -> Optional[Image.Image]:
         
         """
