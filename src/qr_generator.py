@@ -10,12 +10,13 @@ class QRGenerator():
     def generate_qrcode( 
             data:str,
             output:str = "qrcode", 
-            output_path:str = "./assets/output",
+            output_path:str = "assets/output",
             box_size:int = 10, 
             border:int = 2, 
             color:str = "black", 
             icon_path:Optional[str]=None, 
-            img_format: str = 'png'
+            img_format: str = 'png',
+            download_api: bool = False
         ) -> Optional[Image.Image]:
         
         """
@@ -29,7 +30,7 @@ class QRGenerator():
             border: Border width in boxes
             color: QR code color
             icon_path: Path to icon image
-            format: Output format (png, jpg, jpeg)
+            img_format: Output format (png, jpg, jpeg)
         
         Returns:
             PIL Image object or None if failed
@@ -67,7 +68,9 @@ class QRGenerator():
                 except Exception as e: 
                     print(f"Warning: Could not add icon: {e}")  
             
-            img.save(os.path.join(output_path, f'{output}.{format}'), format.upper())
+            if not download_api: 
+                img.save(os.path.join(output_path, f'{output}.{img_format}'), img_format.upper())
+            
             return img
         
         except qrcode.exceptions.DataOverflowError:
