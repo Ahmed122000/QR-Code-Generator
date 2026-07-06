@@ -1,7 +1,7 @@
 # QR Code Generator
 
 [![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
-[![Python versions](https://img.shields.io/pypi/pyversions/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
+[![Python version](https://img.shields.io/badge/python-3.8-blue.svg)](https://pypi.org/project/qr-generator-cli/1.0.0/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Ahmed122000/QR-Code-Generator/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Ahmed122000/QR-Code-Generator.svg)](https://github.com/Ahmed122000/QR-Code-Generator/issues)
 
