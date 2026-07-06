@@ -48,12 +48,11 @@ def main():
         sys.exit(1)        
 
     #create output directory if needed    
-    if args.path != './':
-        try: 
-            os.makedirs(args.path, exist_ok=True)
-        except PermissionError: 
-            print(f"Error: Cannot create directory `{args.path}`")
-            sys.exit(1)
+    try: 
+         os.makedirs(args.path, exist_ok=True)
+    except PermissionError: 
+        print(f"Error: Cannot create directory `{args.path}`")
+        sys.exit(1)
     
     
     

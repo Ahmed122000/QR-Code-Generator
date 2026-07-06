@@ -31,7 +31,8 @@ class QRGenerator():
             color: QR code color
             icon_path: Path to icon image
             img_format: Output format (png, jpg, jpeg)
-        
+            download_api: If True, skips saving to disk (for API/web use)
+            
         Returns:
             PIL Image object or None if failed
         """
