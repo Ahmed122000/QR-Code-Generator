@@ -221,3 +221,15 @@ venv/
 .env/
 *.pyc
 __pycache__/
+
+
+dist/                 
+*.egg-info/           
+__pycache__/          
+*.pyc                
+bin/                  
+lib/                  
+lib64/                
+include/              
+pyvenv.cfg            
+assets/output/        
