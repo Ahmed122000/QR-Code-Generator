@@ -1,253 +1,148 @@
 # QR Code Generator
 
-A Python-based QR code generator with customizable styling, watermark support, and multiple output formats. Generate professional QR codes from URLs or text with ease.
+A Python-based QR code generator with customizable styling and watermark/logo support. Generate professional QR codes from URLs or text with ease.
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Language](https://img.shields.io/badge/Language-Python-blue.svg)
+[![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
+[![Python versions](https://img.shields.io/pypi/pyversions/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 ## Features
 
-✨ **Core Capabilities:**
 - Generate QR codes from URLs or plain text
-- **Customizable QR code colors** (red, blue, green, orange, purple, yellow, black)
-- **Optional watermark/icon support** at the center of QR code
-- **Multiple output formats** (PNG, JPG, JPEG)
-- High error correction rate (Level H)
-- **Automatic directory creation** for output paths
-- Input validation for URLs
-- **Better error handling** with detailed error messages
-- **Mutually exclusive arguments** enforcing either URL or text input
-
-## Requirements
-
-- Python 3.x
-- Dependencies listed in `requirements.txt`:
-  - `qrcode==7.3.1`
-  - `Pillow==8.4.0`
+- Customizable size, foreground/background colors, and error correction level
+- Add watermark/logo with automatic centering and scaling
+- Save to PNG/JPG/JPEG
+- Command-line interface (CLI) and Python API
+- Packaged and published on PyPI (see installation below)
+- Project metadata and build configuration provided via `pyproject.toml`
 
 ## Installation
 
-### Quick Setup
+Install from PyPI:
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/Ahmed122000/QR-Code-Generator.git
-cd QR-Code-Generator
+pip install qr-generator-cli
 ```
 
-2. Install dependencies using requirements.txt:
+Or install the latest from the repository:
+
 ```bash
-pip install -r requirements.txt
+pip install git+https://github.com/Ahmed122000/QR-Code-Generator.git
 ```
 
-**Alternative:** Install dependencies manually:
+Development install (uses `pyproject.toml` / PEP 517):
+
 ```bash
-pip install qrcode[pil]==7.3.1 Pillow==8.4.0
+# Build and install in editable/development mode (if you use Poetry, see Poetry docs)
+pip install -e .
 ```
 
-## Usage
+Requirements: Python >= 3.8. Dependencies are declared in `pyproject.toml` and include `qrcode[pil]` and `Pillow`.
 
-### Basic Commands
+## Quick Usage
 
-Generate a QR code from a URL:
+CLI (recommended):
+
 ```bash
-python main.py --url "https://example.com"
+# Basic: generate and save qrcode.png
+qr "https://example.com" --output qrcode.png
+
+# With styling
+qr "https://example.com" --size 800 --fg "#1d3557" --bg "#f1faee" --ec H
+
+# Add watermark/logo
+qr "https://example.com" --output qrcode.png --watermark assets/logo.png --watermark-scale 0.25
 ```
 
-Generate a QR code from text:
-```bash
-python main.py --txt "Hello, World!"
+(The CLI entry point is `qr` as declared in `pyproject.toml`.)
+
+Python API (example — adjust import path to your package layout if needed):
+
+```python
+from src.main import main as qr_main  # or import the QRGenerator class from your package
+
+# Example: if you expose a programmatic API, call it like:
+# from qr_generator import QRGenerator
+# gen = QRGenerator(...)
+# gen.make_qr("https://example.com", output_path="qrcode.png")
 ```
 
-Generate a QR code with custom color:
+## Configuration (pyproject.toml)
+
+This repository includes `pyproject.toml` for packaging metadata and build configuration (setuptools backend). Use standard tools to build and publish:
+
 ```bash
-python main.py --url "https://example.com" --color red
+# Build
+python -m build
+
+# Upload (after building)
+twine upload dist/*
 ```
 
-Generate with custom output filename and directory:
-```bash
-python main.py --txt "Your text here" --output "my_qrcode" --path "./qrcodes"
-```
-
-Generate with custom format (JPG instead of PNG):
-```bash
-python main.py --url "https://example.com" --format jpg
-```
-
-Generate with watermark/icon:
-```bash
-python main.py --url "https://example.com" --icon icon.png
-```
-
-### Arguments
-
-| Argument | Type | Default | Required | Description |
-|----------|------|---------|----------|-------------|
-| `--url` | string | - | * | URL to encode in QR code (URL validation performed) |
-| `--txt` | string | - | * | Text to encode in QR code |
-| `--color` | string | `black` | No | QR code color: `red`, `blue`, `green`, `orange`, `purple`, `yellow`, `black` |
-| `--output` | string | `qrcode` | No | Output filename (without extension) |
-| `--icon` | string | - | No | Path to icon/watermark image file |
-| `--path` | string | `./assets/output` | No | Output directory path |
-| `--format` | string | `png` | No | Output image format: `png`, `jpg`, `jpeg` |
-
-**\* Either `--url` or `--txt` is required, but not both.**
+If you use Poetry, `pyproject.toml` can also contain Poetry configuration.
 
 ## Examples
 
-### Generate QR code from GitHub URL
-```bash
-python main.py --url "https://github.com/Ahmed122000/QR-Code-Generator"
-```
+- `examples/basic.py` — simple generation and save
+- `examples/with_logo.py` — generate QR with a centered watermark/logo
+- `examples/batch_generate.py` — generate multiple QR codes from a CSV
 
-**Output:** `qrcode.png` (in current directory)
+(Adjust example paths to match repository layout.)
 
-### Generate red QR code from text with custom output
-```bash
-python main.py --txt "Contact: Ahmed@example.com" --color red --output "contact_qr"
-```
+## Changelog (high level)
 
-**Output:** `contact_qr.png`
+- v1.0.0 — Packaged and published to PyPI as `qr-generator-cli`; added `pyproject.toml` and CLI entry point `qr`.
 
-### Generate QR code with watermark/logo
-```bash
-python main.py --url "https://example.com" --icon logo.png --output "branded_qr"
-```
+If you maintain a `CHANGELOG.md`, add detailed release notes there.
 
-**Output:** `branded_qr.png` (with centered logo)
-
-### Generate JPG format in custom directory
-```bash
-python main.py --txt "My Data" --format jpg --path "./output/qrcodes" --output "my_code"
-```
-
-**Output:** `./output/qrcodes/my_code.jpg` (creates directory if it doesn't exist)
-
-### Generate blue QR code with all custom options
-```bash
-python main.py --url "https://example.com" --color blue --icon watermark.png --path "./qr_codes" --output "website_qr" --format png
-```
-
-**Output:** `./qr_codes/website_qr.png`
-
-## Project Structure
+## Project Structure (example)
 
 ```
 QR-Code-Generator/
-├── assets
-    ├── output
-    └── logo 
-├── main.py              # CLI entry point with argument parsing and validation
-├── qr_generator.py      # Core QR code generation logic
-├── requirements.txt     # Python package dependencies
-├── icon.png             # Default watermark image (optional)
-├── LICENSE              # MIT License
-└── README.md            # This file
+├── assets/
+│   ├── output/
+│   └── logo.png
+├── src/
+│   └── main.py        # CLI entry point (pyproject defines `qr = src.main:main`)
+├── pyproject.toml
+├── README.md
+├── LICENSE
+└── examples/
 ```
 
 ## How It Works
 
-### `main.py`
-- **Argument Parsing:** Uses `argparse` with mutually exclusive group for `--url` and `--txt`
-- **URL Validation:** Validates URL format using `urllib.parse.urlparse`
-- **Input Validation:** Ensures input data is not empty and properly formatted
-- **Directory Creation:** Automatically creates output directory if it doesn't exist
-- **Error Handling:** Provides detailed error messages and graceful exit codes
-- **Calls `QRGenerator`:** Passes arguments to the core QR generation logic
+- CLI argument parsing uses `argparse` with mutually exclusive input options (URL or text).
+- QR generation uses the `qrcode` library with Pillow (PIL) for image processing.
+- Watermark/logo support scales and centers an icon on the QR image and preserves transparency.
+- Output formats supported: `png`, `jpg`, `jpeg`.
 
-### `qr_generator.py`
-- **QRGenerator Class:** Static method `generate_qrcode()` handles all QR generation
-- **QR Code Creation:** Uses `qrcode` library with auto-fitting version
-- **Image Processing:** Uses PIL (Pillow) for image manipulation
-- **Icon/Watermark Support:** 
-  - Optionally loads and converts icon to RGBA
-  - Scales watermark to 1/4 of QR code size
-  - Centers watermark on QR code
-  - Composites with transparency support
-- **Multiple Formats:** Saves in PNG, JPG, or JPEG format
-- **Error Handling:** Catches and reports specific errors (DataOverflowError, PermissionError, etc.)
-- **Type Hints:** Uses Python type hints for better code clarity
+## Common Commands
 
-### `requirements.txt`
-Contains all dependencies needed to run the project:
-- `qrcode==7.3.1` - QR code generation library
-- `Pillow==8.4.0` - Image processing library
-- Pin versions ensure compatibility and reproducible builds
-
-## Configuration
-
-### QR Code Parameters (Advanced)
-
-You can modify advanced parameters by editing `qr_generator.py`:
-
-```python
-QRGenerator.generate_qrcode(
-    data,                           # QR code data (required)
-    output="qrcode",                # Output filename
-    output_path="./assets/output",  # Output directory
-    box_size=10,                    # Pixel size per box (default: 10)
-    border=2,                       # Border width in boxes (default: 2)
-    color="black",                  # QR code color
-    icon_path=None,                 # Icon file path (optional)
-    format='png'                    # Output format
-)
-```
-
-### Color Options
-- `red` - Red colored QR code
-- `blue` - Blue colored QR code
-- `green` - Green colored QR code
-- `orange` - Orange colored QR code
-- `purple` - Purple colored QR code
-- `yellow` - Yellow colored QR code
-- `black` - Black colored QR code (default)
-
-### Output Formats
-- `png` - PNG format (lossless, recommended)
-- `jpg` - JPEG format (lossy compression)
-- `jpeg` - JPEG format (alias for jpg)
-
-## Error Handling
-
-The application provides helpful error messages for common issues:
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Input data cannot be empty!` | Empty input provided | Provide non-empty `--url` or `--txt` |
-| `Invalid URL format!` | Malformed URL | Use proper URL: `https://example.com` |
-| `Cannot create directory` | Permission denied | Check directory permissions |
-| `Icon file not found` | Icon path doesn't exist | Verify icon path is correct |
-| `Data too large for this QR version` | Text/URL too long | Reduce input size |
+- Build package: `python -m build`
+- Publish to PyPI: `twine upload dist/*`
+- Run CLI locally: `qr "https://example.com" --output q.png`
 
 ## Troubleshooting
 
-### ModuleNotFoundError: No module named 'qrcode'
-Make sure to install dependencies:
-```bash
-pip install -r requirements.txt
-```
+- ModuleNotFoundError: No module named 'qrcode' — install dependencies: `pip install qrcode[pil] Pillow`
+- Permission denied creating output directory — check write permissions
+- Icon not displayed — ensure the icon path exists and supports transparency (PNG recommended)
 
-### Permission Denied when creating output directory
-Check write permissions on the target directory path.
+## Contributing
 
-### Icon not displayed in QR code
-Ensure the icon file path is correct and the file exists. The icon should support transparency (PNG recommended).
+Contributions welcome! Suggested workflow:
+
+1. Fork the repo and create a feature branch.
+2. Run tests and linting (if present).
+3. Open a pull request describing your changes.
+
+When releasing a new version to PyPI, update `pyproject.toml` version and follow standard build/release steps.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
 
-## Technologies Used
+## Author
 
-- **qrcode** - QR code generation (v7.3.1)
-- **Pillow (PIL)** - Image processing and watermarking (v8.4.0)
-- **argparse** - Command-line interface
-- **typing** - Type hints for better code quality
-
-## Topics
-
-`argparse` | `python` | `qrcode` | `qrcode-generator` | `cli` | `image-processing`
-
----
-
-**Author:** [Ahmed122000](https://github.com/Ahmed122000)
+**Ahmed122000** — https://github.com/Ahmed122000
