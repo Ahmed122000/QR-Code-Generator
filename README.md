@@ -2,8 +2,8 @@
 
 A Python-based QR code generator with customizable styling and watermark/logo support. Generate professional QR codes from URLs or text with ease.
 
-[![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
-[![Python versions](https://img.shields.io/pypi/pyversions/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
+[![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/1.0.0/)
+[![Python version](https://img.shields.io/badge/python-3.8-blue.svg)](https://pypi.org/project/qr-generator-cli/1.0.0/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 ## Features
