@@ -5,15 +5,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="qr-generator-cli"
-version="1.0.0"
+version="1.0.3"
 description = "A CLI tool to generate QR codes with custom colors and icons"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
-dependencies = ["qrcode[pil]", "Pillow"]
+dependencies = [
+    "qrcode[pil]", 
+    "Pillow"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov"
+]
 
 [project.urls]
 Homepage = "https://github.com/Ahmed122000/QR-Code-Generator"
+Repository = "https://github.com/Ahmed122000/QR-Code-Generator"
+Issues = "https://github.com/Ahmed122000/QR-Code-Generator/issues"
 
 [project.scripts]
 qr = "src.main:main"

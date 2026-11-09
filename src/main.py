@@ -17,8 +17,8 @@ def validate_url(url:str) -> bool:
 def main() -> int:
         
     parser = argparse.ArgumentParser( 
-        description="Generate QR codes with custom colors and watermark",
-        epilog="Example: python main.py --url https://example.com --color blue"
+        description="Generate QR codes with custom colors and an optional center icon.",
+        epilog="Example: qr --url https://example.com --color blue"
     )
     
     input_group = parser.add_mutually_exclusive_group(required=True)
