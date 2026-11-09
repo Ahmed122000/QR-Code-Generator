@@ -1,89 +1,149 @@
 import qrcode
 from PIL import Image 
-import os
+
 import traceback
 from typing import Optional
 
+from pathlib import Path
+from typing import Union
+
+
 class QRGenerator():
     """QR Code generator with optional watermark support"""
+    
+    SUPPORTED_FORMATS = {'png': 'png',
+                        'jpg' : 'jpeg',
+                        'jpeg' : 'jpeg'}
+
     @staticmethod
     def generate_qrcode( 
             data:str,
-            output:str = "qrcode", 
-            output_path:str = "assets/output",
+            color:str = "black",
+            background_color:str = "white",
             box_size:int = 10, 
-            border:int = 2, 
-            color:str = "black", 
-            icon_path:Optional[str]=None, 
-            img_format: str = 'png',
-            download_api: bool = False
-        ) -> Optional[Image.Image]:
+            border:int = 4,
+            icon_path:Union[str, Path, None]=None, 
+        ) -> Image.Image:
         
         """
-        Generate a QR code with optional icon watermark.
-        
+        Generate a QR code and return it as a PIL Image.
+
         Args:
-            data: Text or URL to encode
-            output: Output filename without extension
-            output_path: Output directory path
-            box_size: Size of each QR box in pixels
-            border: Border width in boxes
-            color: QR code color
-            icon_path: Path to icon image
-            img_format: Output format (png, jpg, jpeg)
-            download_api: If True, skips saving to disk (for API/web use)
+            data: Text or URL to encode.
+            color: QR code foreground color.
+            background_color: QR code background color.
+            box_size: Size of each QR module in pixels.
+            border: Width of the QR border in modules.
+            icon_path: Optional path to a center icon.
 
         Returns:
-            PIL Image object or None if failed
+            Generated QR code as a PIL Image.
+
+        Raises:
+            ValueError: If the input or configuration is invalid.
+            FileNotFoundError: If the requested icon does not exist.
+            qrcode.exceptions.DataOverflowError: If the data
+                exceeds the QR code's capacity.
         """
-        try:
-            qr = qrcode.QRCode(
+
+        if not isinstance(data, str) or not data.strip():
+            raise ValueError("QR code data connot be empty")
+        
+        if box_size <= 0: 
+            raise ValueError("box_size must be greater than zero.")
+        
+        if border <0:
+            raise ValueError("border cannot be negative.")
+        
+        qr = qrcode.QRCode(
                 version= None, 
                 error_correction = qrcode.constants.ERROR_CORRECT_H, 
                 box_size = box_size, 
                 border= border
             )
             
-            qr.add_data(data)
-            qr.make(fit=True)
+        qr.add_data(data)
+        qr.make(fit=True)
 
-            #create image
-            img = qr.make_image(fill_color=color, back_color="white").convert("RGBA")
+        #create image
+        image = qr.make_image(
+            fill_color=color, 
+            back_color=background_color
+        ).convert("RGBA")
             
+        #add icon if requested
+        if icon_path is not None:
+            icon_path = Path(icon_path)
 
-            #add icon if requested
-            if icon_path:
-                try: 
-                    watermark = Image.open(icon_path).convert("RGBA")
-                    watermark_size = (img.size[0] //4, img.size[1]//4)
-                    watermark = watermark.resize(watermark_size, Image.LANCZOS)
+            if not icon_path.is_file():
+                    raise FileNotFoundError(f"Icon file not found: {icon_path}")
 
-                    #center the watermark            
-                    pos = ((img.size[0]- watermark.size[0])//2, (img.size[1] - watermark.size[1])//2)
+            with Image.open(icon_path) as icon_file:
+                    icon = icon_file.convert("RGBA")
+            
+            icon_size = (
+                image.width //4, 
+                image.height//4
+            )
+            icon = icon.resize(
+                icon_size, 
+                Image.Resampling.LANCZOS
+            )
+            
+            #center the watermark            
+            position = (
+                (image.width - icon.width)//2, 
+                (image.height- icon.height)//2
+            )
                     
-                    #paste using watermakr as mask (supports alpha)
-                    img.paste(watermark, pos, mask=watermark.split()[3])
+            #paste using watermakr as mask (supports alpha)
+            image.paste(
+                icon, 
+                position, 
+                mask=icon.getchannel("A")
+            )
 
-                except FileNotFoundError:
-                    print("Warning: Icon file not found, proceeding without icon")
-                except Exception as e: 
-                    print(f"Warning: Could not add icon: {e}")  
-            
-            if not download_api: 
-                img.save(os.path.join(output_path, f'{output}.{img_format}'), img_format.upper())
-            
-            return img
+        return image
         
-        except qrcode.exceptions.DataOverflowError:
-            print("Error: Data too large for this QR version")
-            print("Try reducing the input size")
-            return None
+
+    @staticmethod
+    def save_qrcode(
+         image: Image.Image, 
+         output: str = 'qrcode', 
+         output_path: Union[str, Path] = "assets/output", 
+         img_format:str = "png"
+    ) -> Path: 
+         
+        """
+        Save a generated QR code to disk.
+
+        Returns:
+            Path to the saved image.
+        """
+
+        img_format = img_format.lower()
+
+        if img_format not in QRGenerator.SUPPORTED_FORMATS.keys(): 
+            raise ValueError(
+                f"Unsupported format: {img_format}"
+            )
         
-        except PermissionError:
-            print(f"Error: Permission denied when saving to '{output_path}'")
-            return None
-        
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            traceback.print_exc()
-            return None
+        if not output.strip():
+            raise ValueError("Output filename cannot be empty.")
+
+        output_directory = Path(output_path)
+        output_directory.mkdir(parents=True, exist_ok=True)
+
+        output_file = output_directory / f"{output}.{img_format}"
+
+        image_to_save = (
+             image.convert("RGB") if img_format in {"jpg", "jpeg"}
+             else image
+        )
+
+        image_to_save.save(
+            output_file, 
+            format=QRGenerator.SUPPORTED_FORMATS[img_format].upper()
+        )
+
+        return output_file
