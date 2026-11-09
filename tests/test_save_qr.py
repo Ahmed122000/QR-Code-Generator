@@ -44,3 +44,14 @@ def test_save_qrcode_with_unsupported_format(tmp_path):
             output_path=tmp_path,
             img_format="gif",
         )
+        
+def test_save_qrcode_with_empty_output_name(tmp_path):
+    image = QRGenerator.generate_qrcode("Hello")
+
+    with pytest.raises(ValueError):
+        QRGenerator.save_qrcode(
+            image,
+            output="",
+            output_path=tmp_path,
+            img_format="png",
+        )

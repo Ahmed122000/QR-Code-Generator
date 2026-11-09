@@ -1,5 +1,6 @@
 from PIL import Image
 from src.qr_generator import QRGenerator
+from PIL import UnidentifiedImageError
 import pytest
 
 def test_generate_qrcode_returns_image():
@@ -46,3 +47,23 @@ def test_generate_qrcode_with_icon(tmp_path):
     )
 
     assert isinstance(image, Image.Image)
+
+
+def test_generate_qrcode_with_missing_icon(tmp_path):
+    icon_path = tmp_path / "missing_icon.png"
+
+    with pytest.raises(FileNotFoundError):
+        QRGenerator.generate_qrcode(
+            "Hello, pytest!",
+            icon_path=icon_path,
+        )
+
+def test_generate_qrcode_with_invalid_icon(tmp_path):
+    icon_path = tmp_path / "invalid_icon.png"
+    icon_path.write_text("This is not an image")
+
+    with pytest.raises(UnidentifiedImageError):
+        QRGenerator.generate_qrcode(
+            "Hello, pytest!",
+            icon_path=icon_path,
+        )
