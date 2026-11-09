@@ -77,6 +77,42 @@ You can generate QR codes directly from your terminal.
 Run the CLI from the project root:
 
 ```bash
+qr src.main --url https://example.com
+```
+
+Generate a QR code from plain text:
+
+```bash
+qr src.main --txt "Hello, World!"
+```
+
+Customize the QR code colors:
+
+```bash
+qr src.main --url https://example.com --color blue --bg-color white
+```
+
+Add an icon to the center:
+
+```bash
+qr src.main --url https://example.com --icon assets/logo.png
+```
+
+Choose the output filename, directory, and format:
+
+```bash
+qr src.main \
+    --url https://example.com \
+    --output my_qrcode \
+    --path assets/output \
+    --format png
+```
+
+### Using the Python API
+
+The project also provides a Python API for generating and saving QR codes programmatically.
+
+```bash
 python -m src.main --url https://example.com
 ```
 
@@ -108,9 +144,6 @@ python -m src.main \
     --format png
 ```
 
-### Using the Python API
-
-The project also provides a Python API for generating and saving QR codes programmatically.
 
 #### 1. Generate a QR code
 
