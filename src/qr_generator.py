@@ -87,7 +87,7 @@ class QRGenerator():
             )
             icon = icon.resize(
                 icon_size, 
-                Image.Resampling.LANCZOS
+                Image.LANCZOS
             )
             
             #center the watermark            
