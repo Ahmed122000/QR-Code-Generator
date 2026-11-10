@@ -1,6 +1,6 @@
 # QR Code Generator
 
-[![PyPI version](https://badge.fury.io/py/qr-generator-cli.svg)](https://pypi.org/project/qr-generator-cli/)
+[![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli)](https://pypi.org/project/qr-generator-cli/)
 [![Python](https://img.shields.io/pypi/pyversions/qr-generator-cli)](https://pypi.org/project/qr-generator-cli/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
