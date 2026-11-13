@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sah-qr-generator"
-version = "1.0.5"
+version = "1.0.0"
 description = "A customizable QR code generator with optional center icons."
 readme = "README.md"
 license = { file = "LICENSE" }
