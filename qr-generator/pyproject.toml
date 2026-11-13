@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "sah-qr-generator"
+version = "1.0.5"
+description = "A customizable QR code generator with optional center icons."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+
+dependencies = [
+    "qrcode[pil]>=7.4",
+    "Pillow>=9.1"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/Ahmed122000/QR-Code-Generator"
+Repository = "https://github.com/Ahmed122000/QR-Code-Generator"
+Issues = "https://github.com/Ahmed122000/QR-Code-Generator/issues"
+
+[project.scripts]
+qr = "qr_generator.cli:main"
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
