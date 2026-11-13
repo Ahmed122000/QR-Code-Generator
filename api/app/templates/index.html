@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <title>
+        SAH QR-Code Generator
+    </title>
+</head>
+
+<body>
+    <main class="container">
+
+        <header>
+            <div class="brand">SAH / TOOLS</div>
+            <h1>QR Code <span>Generator.</span></h1>
+            <p>Turn your text or URL into a QR code. Customize its colors and download it instantly.</p>
+        </header>
+
+        <section class="generator-card">
+            <h2 class="section-title">Create your QR code</h2>
+
+            <form action="/generate-qr" method="post">
+
+                <div class="form-group">
+                    <label for="data">Text / URL</label>
+                    <input
+                        id="data"
+                        type="text"
+                        name="data"
+                        required
+                        value="{{ data or '' }}"
+                        placeholder="https://example.com"
+                    >
+                </div>
+
+                <div class="color-grid">
+                    <div class="form-group">
+                        <label for="fg-colors">Foreground color</label>
+                        <select id="fg-colors" name="fg_color">
+                            {% for color in colors %}
+                            <option value="{{ color }}"
+                                {% if color == fg_color %}selected{% endif %}>
+                                {{ color }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bg-colors">Background color</label>
+                        <select id="bg-colors" name="bg_color">
+                            {% for color in colors %}
+                            <option value="{{ color }}"
+                                {% if color == bg_color %}selected{% endif %}>
+                                {{ color }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit">Generate QR Code →</button>
+            </form>
+
+            {% if image_data %}
+            <form action="/download-qr" method="post">
+            <input type="hidden" name="data" value = "{{ data or '' }}">
+            <input type="hidden" name="fg_color" value="{{ fg_color }}">
+            <input type="hidden" name="bg_color" value="{{ bg_color }}">
+           
+            <div class="generated-section">
+                <h2>Your QR Code is Ready!</h2>
+                <div id="generated-qr">
+                    <img src="data:image/png;base64,{{ image_data }}"
+                             alt="Generated QR code">
+                </div>
+                <button type="submit"> Download QR</button>
+                </form>
+                
+                <p class="download-hint">
+                    Click the QR code to download it.
+                </p>
+            </div>
+
+            {% elif error_message %}
+            <p class="error-message">{{ error_message }}</p>
+            {% endif %}
+
+        </section>
+
+        <footer>
+            Built with <span>♥</span> by SAH
+        </footer>
+
+    </main>
+</body>
+</html>
+

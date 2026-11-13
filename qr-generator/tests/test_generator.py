@@ -1,5 +1,5 @@
 from PIL import Image
-from src.qr_generator import QRGenerator
+from qr_generator import QRGenerator
 from PIL import UnidentifiedImageError
 import pytest
 

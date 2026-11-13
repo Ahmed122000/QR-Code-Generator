@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from PIL import UnidentifiedImageError
 from qrcode.exceptions import DataOverflowError
 
-from src import main
+from qr_generator import cli as main 
 
 
 def setup_mocks(monkeypatch, generate_mock, save_mock):

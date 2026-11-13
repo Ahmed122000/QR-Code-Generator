@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from qrcode.exceptions import DataOverflowError
 from PIL import UnidentifiedImageError
 
-from src.qr_generator import QRGenerator
+from qr_generator import QRGenerator
 
 
 def validate_url(url:str) -> bool:
@@ -85,20 +85,7 @@ def main() -> int:
             background_color=args.bg_color,
             icon_path=args.icon, 
         )
-    except FileNotFoundError as error:
-        print(f"Error: File not found: {error}")
-        return 1
-    except UnidentifiedImageError as error:
-        print(f"Error: The icon file is not a supported image: {error}")
-        return 1
-    except DataOverflowError as error:
-        print(f"Error: The input is too large to encode in a QR code: {error}")
-        return 1
-    except ValueError as error:
-        print(f"Error: Invalid QR code configuration: {error}")
-        return 1
-    
-    try:      
+
         saved_file_path = QRGenerator.save_qrcode(
             image, 
             output = args.output, 
@@ -106,21 +93,24 @@ def main() -> int:
             img_format=args.format
         )
 
-    except PermissionError as error:
-        print("Error: Permission denied while saving the QR code.")
-        print(error)
+    except FileNotFoundError as error:
+        print(f"Error: {error}", file=sys.stderr)
         return 1
-    except ValueError as error:
-        print(f"Error: Invalid output configuration: {error}")
+
+    except UnidentifiedImageError as error:
+        print(f"Error: Invalid icon image: {error}", file=sys.stderr)
         return 1
-    except OSError as error:
-        print(f"Error: Could not save the QR code: {error}")
+
+    except DataOverflowError as error:
+        print(f"Error: QR data exceeds capacity: {error}", file=sys.stderr)
         return 1
+
+    except (ValueError, TypeError, OSError) as error:
+        print(f"Error: {error}", file=sys.stderr)
+        return 1
+    
 
     print("QR code generated successfully!")
     print(f"Saved to: {saved_file_path}")
 
     return 0
-
-if __name__ == "__main__":
-    sys.exit(main())

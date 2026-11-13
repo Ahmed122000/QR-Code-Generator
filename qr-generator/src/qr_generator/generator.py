@@ -1,11 +1,8 @@
-import qrcode
-from PIL import Image 
-
-import traceback
-from typing import Optional
-
 from pathlib import Path
 from typing import Union
+
+import qrcode
+from PIL import Image 
 
 
 class QRGenerator():
@@ -49,11 +46,11 @@ class QRGenerator():
         if not isinstance(data, str) or not data.strip():
             raise ValueError("QR code data connot be empty")
         
-        if box_size <= 0: 
-            raise ValueError("box_size must be greater than zero.")
-        
-        if border <0:
-            raise ValueError("border cannot be negative.")
+        if not isinstance(box_size, int) or isinstance(box_size, bool) or box_size <= 0:
+            raise ValueError("box_size must be a positive integer.")
+
+        if not isinstance(border, int) or isinstance(border, bool) or border < 0:
+            raise ValueError("border must be a non-negative integer.")
         
         qr = qrcode.QRCode(
                 version= None, 
@@ -87,7 +84,7 @@ class QRGenerator():
             )
             icon = icon.resize(
                 icon_size, 
-                Image.LANCZOS
+                Image.Resampling.LANCZOS
             )
             
             #center the watermark            
@@ -121,12 +118,22 @@ class QRGenerator():
             Path to the saved image.
         """
 
+        if not isinstance(image, Image.Image):
+            raise TypeError("image must be a PIL Image.")
+
+        if not isinstance(output, str) or not output.strip():
+            raise ValueError("Output filename cannot be empty.")
+
+        if not isinstance(img_format, str):
+            raise ValueError("Image format must be a string.")
+        
         img_format = img_format.lower()
 
         if img_format not in QRGenerator.SUPPORTED_FORMATS.keys(): 
             raise ValueError(
                 f"Unsupported format: {img_format}"
             )
+
         
         if not output.strip():
             raise ValueError("Output filename cannot be empty.")
