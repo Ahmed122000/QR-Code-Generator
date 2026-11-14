@@ -1,17 +1,15 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from api.app.routers import pages
+from app.routes import pages
+from pathlib import Path
 
 
-app = FastAPI(title="SAH QR Code Generator"              )
-app.mount("/static", StaticFiles(directory="static"), name="static")
+BASE_DIR = Path(__file__).resolve().parent
+
+app = FastAPI(
+    title="SAH QR Code Generator",
+    description="Generate and download customized QR codes.",
+    version="1.0.0"
+)
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 app.include_router(pages.router)
-
-
-
-
-
-
-
-
-    
