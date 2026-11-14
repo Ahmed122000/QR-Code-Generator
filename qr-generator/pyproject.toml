@@ -5,11 +5,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sah-qr-generator"
-version = "1.0.0"
+version = "1.0.1"
 description = "A customizable QR code generator with optional center icons."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
 dependencies = [
     "qrcode[pil]>=7.4",

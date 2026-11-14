@@ -1,0 +1,2 @@
+class InvalidColorError(ValueError):
+    pass
