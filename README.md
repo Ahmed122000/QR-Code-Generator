@@ -1,85 +1,162 @@
-# QR Code Generator
+# SAH QR Code Generator
 
-[![PyPI version](https://img.shields.io/pypi/v/qr-generator-cli)](https://pypi.org/project/qr-generator-cli/)
-[![Python](https://img.shields.io/pypi/pyversions/qr-generator-cli)](https://pypi.org/project/qr-generator-cli/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PyPI version](https://badge.fury.io/py/sah-qr-generator.svg)](https://pypi.org/project/sah-qr-generator/)
+[![Python versions](https://img.shields.io/pypi/pyversions/sah-qr-generator)](https://pypi.org/project/sah-qr-generator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Python-based QR code generator that allows you to create QR codes from URLs or plain text. Customize colors, add an optional center icon, and save your generated QR codes in different image formats.
+A Python-based QR code generation project that provides both a reusable Python library and a web application.
 
-Use it through a simple command-line interface (CLI) or integrate it directly into your Python projects.
+Generate QR codes from URLs or plain text, customize their appearance, add an optional center icon, and export them as image files.
 
-## Features
+**🌐 Live Demo:** [SAH QR Code Generator](https://sah-qr-generator.onrender.com/)
 
-- **URL and Text Support:** Generate QR codes from URLs or plain text.
-- **Custom Colors:** Choose from supported foreground and background colors.
-- **Center Icon:** Add an optional image to the center of your QR code.
-- **Multiple Formats:** Save generated QR codes as PNG, JPG, or JPEG.
-- **Custom Output:** Choose your output filename and directory.
-- **Python API:** Use the QR generation functionality directly in your Python applications.
-- **Automated Tests:** Includes unit tests using pytest.
+**📦 PyPI Package:** [sah-qr-generator](https://pypi.org/project/sah-qr-generator/)
 
-## Requirements
+---
 
-- Python 3.8 or higher
-- pip
+## Project Overview
+
+This repository contains two main components:
+
+### 1. QR Generator Library
+
+A reusable Python package that provides the core QR code generation functionality.
+
+- Available on PyPI.
+- Provides a command-line interface (CLI).
+- Can be integrated into other Python applications.
+- Supports custom colors and optional center icons.
+- Supports PNG, JPG, and JPEG output formats.
+
+### 2. Web Application
+
+A web-based QR code generator built with FastAPI and Jinja2.
+
+- Generate QR codes directly from your browser.
+- Customize foreground and background colors.
+- Preview generated QR codes instantly.
+- Download QR codes as PNG images.
+- No registration or database required.
+
+The web application uses the published `sah-qr-generator` package rather than duplicating its core generation logic.
+
+---
+
+## Architecture
+
+The project separates the QR generation functionality from the web application.
+
+```text
+User
+ │
+ ├── Command Line Interface
+ │       │
+ │       ▼
+ │   QR Generator Library
+ │
+ └── Web Browser
+         │
+         ▼
+     FastAPI Application
+         │
+         ▼
+     Application Service
+         │
+         ▼
+     QR Generator Library
+         │
+         ▼
+     Generated QR Code
+```
+
+The library handles QR code generation, while the web application handles HTTP requests, input validation, HTML rendering, and image downloads.
+
+---
+
+## Repository Structure
+
+```text
+QR-Code-Generator/
+│
+├── qr-generator/
+│   ├── src/
+│   │   └── qr_generator/
+│   │       ├── __init__.py
+│   │       ├── generator.py
+│   │       └── cli.py
+│   │
+│   ├── tests/
+│   ├── assets/
+│   ├── pyproject.toml
+│   ├── README.md
+│   └── LICENSE
+│
+├── api/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── routes/
+│   │   ├── service/
+│   │   ├── exceptions/
+│   │   ├── templates/
+│   │   └── static/
+│   │
+│   ├── assets/
+│   ├── tests/
+│   ├── requirements.txt
+│   ├── requirements-dev.txt
+│   └── README.md
+│
+├── LICENSE
+└── README.md
+```
+
+---
+
+# Part 1: QR Generator Library
 
 ## Installation
 
-### Install from PyPI
+Install the package from PyPI:
 
 ```bash
-pip install qr-generator-cli
+pip install sah-qr-generator
 ```
 
-### Install from GitHub
-
-```bash
-git clone https://github.com/Ahmed122000/QR-Code-Generator.git
-
-cd QR-Code-Generator
-
-pip install -e .
-```
-
-### Install development dependencies
-
-If you want to contribute or run the tests, install the development dependencies:
-
-```bash
-pip install -e ".[dev]"
-```
+**Requirements:**
+- Python 3.8+
+- pip
 
 ## Usage
 
-### 1. Command-Line Interface (CLI)
+### 1. Command-Line Interface
 
-After installation, you can use the `qr` command directly from your terminal.
+After installation, the `qr` command becomes available.
 
-**Generate a QR code from a URL:**
+Generate a QR code from a URL:
 
 ```bash
 qr --url https://example.com
 ```
 
-**Generate a QR code from plain text:**
+Generate a QR code from plain text:
 
 ```bash
 qr --txt "Hello, World!"
 ```
 
-**Customize QR code colors:**
+Customize QR code colors:
 
 ```bash
 qr --url https://example.com --color blue --bg-color white
 ```
 
-**Add an icon to the center:**
+Add an icon to the center:
 
 ```bash
 qr --url https://example.com --icon assets/logo.png
 ```
 
-**Customize the output filename and directory:**
+Customize the output filename and directory:
 
 ```bash
 qr --url https://example.com \
@@ -88,22 +165,20 @@ qr --url https://example.com \
    --format png
 ```
 
-**Display available commands and options:**
+Display available options:
 
 ```bash
 qr --help
 ```
 
-Generated QR codes are saved in `assets/output/` by default.
-
 ### 2. Python API
 
-You can also use the QR generator directly in your Python applications.
+You can also integrate the library directly into your Python applications.
 
-**Generate a QR code:**
+Generate a QR code:
 
 ```python
-from src.qr_generator import QRGenerator
+from qr_generator import QRGenerator
 
 qr = QRGenerator.generate_qrcode(
     data="https://example.com",
@@ -114,7 +189,7 @@ qr = QRGenerator.generate_qrcode(
 
 The `generate_qrcode()` method returns a Pillow `Image` object. It does not save the image automatically.
 
-**Save the generated QR code:**
+Save the generated QR code:
 
 ```python
 saved_path = QRGenerator.save_qrcode(
@@ -127,10 +202,10 @@ saved_path = QRGenerator.save_qrcode(
 print(f"QR code saved at: {saved_path}")
 ```
 
-**Generate and save a QR code with a center icon:**
+Generate a QR code with a center icon:
 
 ```python
-from src.qr_generator import QRGenerator
+from qr_generator import QRGenerator
 
 qr = QRGenerator.generate_qrcode(
     data="https://example.com",
@@ -147,150 +222,241 @@ saved_path = QRGenerator.save_qrcode(
 )
 ```
 
-## CLI Reference
-
-| Option | Description | Default |
-|---|---|---|
-| `--url` | URL to encode in the QR code | None |
-| `--txt` | Text to encode in the QR code | None |
-| `--color` | QR code foreground color | black |
-| `--bg-color` | QR code background color | white |
-| `--icon` | Path to the optional center icon | None |
-| `--output` | Output filename without extension | qrcode |
-| `--path` | Output directory | assets/output |
-| `--format` | Output image format: png, jpg, jpeg | png |
-| `-h`, `--help` | Display help information | — |
-
-**Supported colors:**
-
-`black`, `white`, `red`, `blue`, `green`, `orange`, `purple`, `yellow`.
-
-The `--url` and `--txt` options are mutually exclusive. You must provide exactly one of them.
-
-## Python API Reference
-
-### `generate_qrcode()`
-
-Generates a QR code and returns a Pillow Image object.
+### Supported Customization
 
 | Parameter | Description | Default |
 |---|---|---|
 | `data` | URL or text to encode | Required |
 | `color` | QR code foreground color | black |
 | `background_color` | QR code background color | white |
-| `box_size` | Size of each QR code box | 10 |
+| `box_size` | Size of each QR code module | 10 |
 | `border` | QR code border width | 4 |
-| `icon_path` | Optional path to a center icon | None |
+| `icon_path` | Optional center icon path | None |
 
-### `save_qrcode()`
+### CLI Options
 
-Saves a generated Pillow Image to the specified location.
-
-| Parameter | Description | Default |
+| Option | Description | Default |
 |---|---|---|
-| `image` | Pillow Image object | Required |
-| `output` | Output filename without extension | qrcode |
-| `output_path` | Destination directory | assets/output |
-| `img_format` | Image format: png, jpg, jpeg | png |
+| `--url` | URL to encode | None |
+| `--txt` | Text to encode | None |
+| `--color` | Foreground color | black |
+| `--bg-color` | Background color | white |
+| `--icon` | Optional center icon | None |
+| `--output` | Output filename | qrcode |
+| `--path` | Output directory | assets/output |
+| `--format` | Output format: png, jpg, jpeg | png |
 
-The method returns the path of the saved image.
+The `--url` and `--txt` options are mutually exclusive. Provide exactly one of them.
 
-## Project Structure
+### Testing the Library
 
-```text
-QR-Code-Generator/
-│
-├── src/
-│   ├── __init__.py
-│   ├── main.py              # CLI interface
-│   └── qr_generator.py      # Core QR generation logic
-│
-├── tests/
-│   ├── test_main.py         # CLI tests
-│   ├── test_qr_generator.py # QR generation tests
-│   └── test_save_qr.py      # Image saving tests
-│
-├── assets/
-│   └── output/              # Generated QR codes
-│
-├── pyproject.toml           # Package configuration
-├── README.md
-├── LICENSE
-└── .gitignore
+Navigate to the library directory:
+
+```bash
+cd qr-generator
 ```
 
-## Testing
-
-The project uses **pytest** for automated testing and **pytest-cov** for measuring test coverage.
-
-Install the development dependencies:
+Install development dependencies:
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-Run all tests:
+Run the tests:
 
 ```bash
-pytest
+python -m pytest
 ```
 
 Run tests with coverage:
 
 ```bash
-pytest --cov=src --cov-report=term-missing
+python -m pytest --cov=qr_generator --cov-report=term-missing
 ```
 
-The project currently has 25 passing test cases and approximately 99% overall code coverage.
+---
 
-## Error Handling
+# Part 2: Web Application
 
-The project handles common errors, including:
+## Features
 
-- Empty or invalid input.
-- Invalid QR code configuration.
-- Missing or invalid icon files.
-- Unsupported image formats.
-- File permission errors.
-- QR code data overflow.
-
-The core generation logic raises meaningful exceptions, while the CLI handles them and displays appropriate error messages.
+- **QR Code Generation:** Generate QR codes from URLs or plain text.
+- **Color Customization:** Customize QR code foreground and background colors.
+- **Instant Preview:** Display generated QR codes directly on the page.
+- **PNG Download:** Download generated QR codes as PNG images.
+- **Input Validation:** Handle empty inputs, unsupported colors, and data that exceeds QR code capacity.
+- **No Registration Required:** Generate QR codes without creating an account.
 
 ## Technologies Used
 
-- **Python:** Main programming language.
-- **qrcode:** QR code generation.
-- **Pillow:** Image processing and manipulation.
-- **argparse:** Command-line argument parsing.
-- **pytest:** Automated testing.
-- **pytest-cov:** Test coverage reporting.
-- **setuptools:** Python package building and distribution.
+| Technology | Purpose |
+|---|---|
+| Python | Main programming language |
+| FastAPI | Web framework |
+| Uvicorn | ASGI server |
+| Jinja2 | HTML templating |
+| sah-qr-generator | Core QR generation library |
+| Pillow | Image processing |
+| HTML5 | Page structure |
+| CSS3 | Styling and responsive layout |
+| Pytest | Automated testing |
+| HTTPX | HTTP testing client |
 
-## Contributing
+## Local Setup
 
-Contributions are welcome!
+### 1. Clone the Repository
 
-1. Fork the repository.
-2. Create a feature branch:
+```bash
+git clone https://github.com/Ahmed122000/QR-Code-Generator.git
+```
 
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+Navigate to the API directory:
 
-3. Make your changes.
-4. Run the tests:
+```bash
+cd QR-Code-Generator/api
+```
 
-   ```bash
-   pytest
-   ```
+### 2. Create a Virtual Environment
 
-5. Commit your changes:
+```bash
+python -m venv .venv
+```
 
-   ```bash
-   git commit -m "Add your feature"
-   ```
+Activate it:
 
-6. Push your branch and open a Pull Request.
+**Linux / macOS:**
+
+```bash
+source .venv/bin/activate
+```
+
+**Windows:**
+
+```bash
+.venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+For running the application:
+
+```bash
+pip install -r requirements.txt
+```
+
+For development and testing:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+### 4. Run the Application
+
+Start the development server:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Open your browser:
+
+```text
+http://127.0.0.1:8000
+```
+
+The interactive API documentation is also available at:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Application Routes
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Displays the QR generator page |
+| `POST` | `/generate-qr` | Generates a QR code and displays its preview |
+| `POST` | `/download-qr` | Generates and downloads a QR code as PNG |
+
+### Generate QR Code
+
+```http
+POST /generate-qr
+```
+
+Accepts the following form parameters:
+
+| Parameter | Description |
+|---|---|
+| `data` | Text or URL to encode |
+| `fg_color` | QR code foreground color |
+| `bg_color` | QR code background color |
+
+Returns the HTML page with the generated QR code preview or an error message.
+
+### Download QR Code
+
+```http
+POST /download-qr
+```
+
+Accepts the same form parameters and returns the generated QR code as a downloadable PNG image.
+
+---
+
+## Testing the Web Application
+
+Navigate to the API directory:
+
+```bash
+cd api
+```
+
+Run the automated tests:
+
+```bash
+pytest
+```
+
+For a more detailed test report:
+
+```bash
+pytest -v
+```
+
+---
+
+## Deployment
+
+The web application is deployed on [Render](https://render.com/).
+
+**Live URL:** https://sah-qr-generator.onrender.com/
+
+Deployment configuration:
+
+| Setting | Value |
+|---|---|
+| Runtime | Python 3 |
+| Root Directory | `api` |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+
+Render provides the `PORT` environment variable, which Uvicorn uses to bind the application to the correct port.
+
+---
+
+## Future Improvements
+
+Potential enhancements for the project include:
+
+- Expand the available QR code customization options.
+- Improve automated test coverage.
+- Add continuous integration with GitHub Actions.
+- Introduce additional QR code formats and features.
+
+---
 
 ## License
 
@@ -305,5 +471,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgments
 
-- [qrcode](https://github.com/lincolnloop/python-qrcode) for QR code generation.
+- [python-qrcode](https://github.com/lincolnloop/python-qrcode) for QR code generation.
 - [Pillow](https://python-pillow.org/) for image processing.
+- [FastAPI](https://fastapi.tiangolo.com/) for the web framework.
